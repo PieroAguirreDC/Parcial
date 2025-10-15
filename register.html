@@ -5,21 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro – CDP Control De Plata</title>
   <link rel="stylesheet" href="register.css" />
-
-  <!-- EmailJS -->
-  <script src="https://cdn.emailjs.com/sdk/3.11.0/email.min.js"></script>
-  <script>
-    (function(){
-      emailjs.init("gnXVblTB9cT_HdwHr"); // tu public key
-    })();
-  </script>
 </head>
+
 <body>
   <header class="encabezado">
-  <a href="index.html" class="brand">
-    <img src="../assets/img/logo-cdp.png" alt="CDP - Control De Plata" class="logo-img">
-  </a>
-</header>
+    <a href="index.html" class="brand">
+      <img src="logo-cdp.png" alt="CDP - Control De Plata" class="logo-img">
+    </a>
+  </header>
 
   <main class="contenedor">
     <h2>Registro de Usuario</h2>
@@ -37,12 +30,22 @@
       <input type="email" id="email" required />
 
       <label>Contraseña:</label>
-    <input type="password" id="password" required minlength="6" maxlength="8" />
+      <input type="password" id="password" required minlength="6" maxlength="8" />
 
       <button type="submit">Registrar</button>
     </form>
+
     <p id="mensaje"></p>
   </main>
+
+  <!-- ✅ Scripts al final para asegurar carga -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    // Inicializar EmailJS después de cargar la librería
+    (function() {
+      emailjs.init({ publicKey: "gnXVblTB9cT_HdwHr" });
+    })();
+  </script>
 
   <script src="register.js"></script>
 </body>

@@ -48,8 +48,8 @@ document.getElementById("formRegistro").addEventListener("submit", async (e) => 
     return;
   }
 
-  // Crear nuevo usuario
-  const username = `${nombres.split(" ")[0]}${apellidos.split(" ")[0]}${dni.slice(-3)}`;
+  // Crear nuevo usuario con nombre.apellido123
+  const username = `${nombres.split(" ")[0].toLowerCase()}.${apellidos.split(" ")[0].toLowerCase()}${dni.slice(-3)}`;
   const token = generarToken();
 
   const nuevoUsuario = {
@@ -60,7 +60,7 @@ document.getElementById("formRegistro").addEventListener("submit", async (e) => 
     username,
     password,
     token,
-    activo: false,
+    activo: true // ✅ ya activo directamente, sin verificación
   };
 
   // Guardar usuario en el array y en localStorage
@@ -72,12 +72,10 @@ document.getElementById("formRegistro").addEventListener("submit", async (e) => 
     .send("service_52ybfid", "template_iogpook", {
       nombre: nombres,
       username: username,
-      email: email,
-      link: `http://127.0.0.1:5500/verify.html?token=${token}`,
+      email: email
     })
     .then(() => {
-      mensaje.textContent =
-        "✅ Registro exitoso. Se envió un correo de confirmación. Revisa tu bandeja.";
+      mensaje.textContent = "✅ Registro exitoso. Se envió un correo con tus credenciales.";
       mensaje.style.color = "green";
       document.getElementById("formRegistro").reset();
     })
