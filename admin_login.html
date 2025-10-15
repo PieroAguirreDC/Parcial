@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrador - CDP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-container">
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="logo-cdp.png" alt="Logo CDP" class="logo-cdp" id="logoCdp">
+    </div>
+
+    <form id="adminLoginForm">
+      <label for="adminUser">Usuario:</label>
+      <input type="text" id="adminUser" required>
+
+      <label for="adminPassword">Contraseña:</label>
+      <input type="password" id="adminPassword" required>
+
+      <button type="submit">Entrar como Administrador</button>
+      <p id="adminMensaje" class="error"></p>
+    </form>
+  </div>
+
+  <script src="admin_login.js"></script>
+</body>
+</html>
