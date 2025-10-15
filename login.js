@@ -40,6 +40,6 @@ document.getElementById("loginForm").addEventListener("submit", (e) => {
   localStorage.setItem("usuarioActivo", JSON.stringify(usuarioEncontrado));
 
   setTimeout(() => {
-    window.location.href = "gestor_usuarios.html";
-  }, 1500);
+  window.location.href = "prestamos.html";
+}, 1500);
 });
