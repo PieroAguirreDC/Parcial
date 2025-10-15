@@ -1,7 +1,7 @@
-// Archivo principal de la aplicación
+document.getElementById('btnRegistro').addEventListener('click', () => {
+  window.location.href = 'registro/register.html';
+});
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('App iniciada correctamente');
-    const mensaje = document.getElementById('mensaje');
-    mensaje.textContent = '¡App funcionando correctamente! 🎯';
+document.getElementById('btnLogin').addEventListener('click', () => {
+  window.location.href = 'login.html';
 });

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificar Cuenta – CDP</title>
+  <link rel="stylesheet" href="registro/register.css">
+</head>
+<body>
+  <div class="contenedor">
+    <h2>Verificando cuenta...</h2>
+    <p id="mensaje"></p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const mensaje = document.getElementById("mensaje");
+
+    const usuario = JSON.parse(localStorage.getItem("usuarioRegistrado"));
+
+    if (usuario && usuario.token === token) {
+      usuario.activo = true;
+      localStorage.setItem("usuarioRegistrado", JSON.stringify(usuario));
+      mensaje.textContent = "✅ Tu cuenta ha sido activada correctamente.";
+      mensaje.style.color = "green";
+    } else {
+      mensaje.textContent = "❌ Enlace inválido o cuenta ya verificada.";
+      mensaje.style.color = "red";
+    }
+  </script>
+</body>
+</html>
