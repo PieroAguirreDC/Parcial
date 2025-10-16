@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solicitar Préstamo</title>
+  <link rel="stylesheet" href="solicitarprestamos.css">
+</head>
+<body>
+  <header>
+    <img src="logo-cdp.png" alt="Logo CDP" class="logo" onclick="window.location.href='prestamos.html'">
+    <h1>Solicitar Préstamo</h1>
+    <p>Completa los datos del préstamo que deseas registrar.</p>
+  </header>
+
+  <main class="container">
+    <form id="formPrestamo">
+
+      <label for="banco">Banco:</label>
+      <select id="banco" required>
+        <option value="">Seleccione un banco</option>
+        <option value="Interbank">Interbank</option>
+        <option value="BCP">BCP</option>
+        <option value="BBVA">BBVA</option>
+        <option value="Scotiabank">Scotiabank</option>
+        <option value="BanBif">BanBif</option>
+        <option value="Caja Arequipa">Caja Arequipa</option>
+        <option value="Caja Huancayo">Caja Huancayo</option>
+      </select>
+
+      <label for="monto">Importe Total (S/):</label>
+      <input type="number" id="monto" min="100" required placeholder="Ej: 20000">
+
+      <label for="cuotas">N° de Cuotas:</label>
+      <input type="number" id="cuotas" min="1" max="120" required placeholder="Ej: 12">
+
+      <label for="interes">Tasa de Interés Anual (%):</label>
+      <input type="number" id="interes" min="0" max="100" required placeholder="Ej: 15">
+
+      <label for="cuota">Monto por Cuota (S/):</label>
+      <input type="text" id="cuota" readonly placeholder="Se calculará automáticamente">
+
+      <label for="fechaInicio">Fecha de Inicio del Préstamo:</label>
+      <input type="date" id="fechaInicio" required>
+
+      <label for="fechaFin">Fecha de Finalización:</label>
+      <input type="date" id="fechaFin" readonly>
+
+      <button type="submit">Guardar Préstamo</button>
+      <p id="mensaje"></p>
+    </form>
+  </main>
+
+  <script src="solicitarprestamos.js"></script>
+</body>
+</html>
