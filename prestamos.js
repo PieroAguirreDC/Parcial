@@ -1,18 +1,36 @@
-// Mostrar saludo personalizado
 document.addEventListener("DOMContentLoaded", () => {
-  const usuarioLogeado = localStorage.getItem("usuarioActual");
+    const saludo = document.getElementById("saludoUsuario");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-  const saludo = document.getElementById("saludoUsuario");
-  if (usuarioLogeado) {
-    saludo.textContent = `Bienvenido, ${usuarioLogeado}`;
-  } else {
-    saludo.textContent = "Bienvenido";
-  }
+    // Leer usuario guardado por login.js
+    let usuarioActual = localStorage.getItem("usuarioActivo");
 
-  // Cerrar sesión
-  const logoutBtn = document.getElementById("logoutBtn");
-  logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("usuarioActual");
-    window.location.href = "login.html";
-  });
+    if (!usuarioActual) {
+        saludo.textContent = "Bienvenido";
+        return;
+    }
+
+    try {
+        usuarioActual = JSON.parse(usuarioActual);
+    } catch {
+        saludo.textContent = "Bienvenido, " + usuarioActual;
+        return;
+    }
+
+    let nombreMostrar = "usuario";
+
+    if (usuarioActual.tipo === "dni") {
+        nombreMostrar = usuarioActual.nombres || usuarioActual.usuario;
+    } 
+    else if (usuarioActual.tipo === "ruc") {
+        nombreMostrar = usuarioActual.empresa || usuarioActual.usuario;
+    }
+
+    saludo.textContent = "Bienvenido, " + nombreMostrar;
+
+    // Cerrar sesión
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("usuarioActivo");
+        window.location.href = "index.html";
+    });
 });

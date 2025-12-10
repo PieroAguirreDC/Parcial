@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Solicitar Préstamo</title>
-  <link rel="stylesheet" href="solicitarprestamos.css">
+  <title>Registrar Deuda</title>
+  <link rel="stylesheet" href="registrardeuda.css">
 </head>
 <body>
+
   <header>
     <img src="logo-cdp.png" alt="Logo CDP" class="logo" onclick="window.location.href='prestamos.html'">
-    <h1>Solicitar Préstamo</h1>
-    <p>Completa los datos del préstamo que deseas registrar.</p>
+    <h1>Registrar Deuda</h1>
+    <p>Completa todos los datos de tu deuda o préstamo.</p>
   </header>
 
   <main class="container">
-    <form id="formPrestamo">
+    <form id="formDeuda">
 
       <label for="banco">Banco:</label>
       <select id="banco" required>
@@ -29,7 +30,7 @@
       </select>
 
       <label for="monto">Importe Total (S/):</label>
-      <input type="number" id="monto" min="100" required placeholder="Ej: 20000">
+      <input type="number" id="monto" min="50" required placeholder="Ej: 5000">
 
       <label for="cuotas">N° de Cuotas:</label>
       <input type="number" id="cuotas" min="1" max="120" required placeholder="Ej: 12">
@@ -40,17 +41,17 @@
       <label for="cuota">Monto por Cuota (S/):</label>
       <input type="text" id="cuota" readonly placeholder="Se calculará automáticamente">
 
-      <label for="fechaInicio">Fecha de Inicio del Préstamo:</label>
+      <label for="fechaInicio">Fecha de Inicio:</label>
       <input type="date" id="fechaInicio" required>
 
       <label for="fechaFin">Fecha de Finalización:</label>
       <input type="date" id="fechaFin" readonly>
 
-      <button type="submit">Guardar Préstamo</button>
+      <button type="submit">Guardar Deuda</button>
       <p id="mensaje"></p>
     </form>
   </main>
 
-  <script src="solicitarprestamos.js"></script>
+  <script src="registrardeuda.js"></script>
 </body>
 </html>

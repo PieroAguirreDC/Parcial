@@ -16,6 +16,7 @@ header {
   padding: 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   width: 100%;
+  position: relative;
 }
 
 header h1 {

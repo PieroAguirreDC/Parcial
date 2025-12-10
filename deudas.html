@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mis Deudas</title>
-  <link rel="stylesheet" href="solicitarprestamos.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Deudas</title>
+    <link rel="stylesheet" href="deudas.css" />
 </head>
 <body>
-  <header>
-    <img src="logo-cdp.png" alt="Logo CDP" class="logo" onclick="window.location.href='prestamos.html'">
+
+<header>
     <h1>Mis Deudas</h1>
-    <p>Aquí puedes ver tus préstamos y pagar cuotas pendientes.</p>
-  </header>
+    <button class="btn-salir" onclick="window.location.href='prestamos.html'">Volver</button>
+</header>
 
-  <main class="container">
+<main class="container">
     <div id="listaDeudas"></div>
-  </main>
+</main>
 
-  <script src="deudas.js"></script>
+<script src="deudas.js"></script>
 </body>
 </html>

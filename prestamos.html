@@ -7,18 +7,31 @@
   <link rel="stylesheet" href="prestamos.css">
 </head>
 <body>
+
   <header>
-    <img src="logo-cdp.png" alt="Logo CDP" class="logo" onclick="window.location.href='index.html'">
+    <img 
+      src="logo-cdp.png" 
+      alt="Logo CDP" 
+      class="logo"
+    >
     <h1>Gestor de Préstamos</h1>
-    <button id="logoutBtn">Cerrar sesión</button>
+    
+    <button id="logoutBtn" onclick="window.location.href='login.html'">
+      Cerrar sesión
+    </button>
   </header>
 
   <main class="container">
     <h2 id="saludoUsuario">Bienvenido</h2>
 
     <div class="botones">
-      <button onclick="window.location.href='solicitarprestamos.html'">💰 Solicitar préstamo</button>
-      <button onclick="window.location.href='deudas.html'">📄 Ver deudas</button>
+      <button onclick="window.location.href='registrardeuda.html'">
+        💰 Registrar deuda
+      </button>
+
+      <button onclick="window.location.href='deudas.html'">
+        📄 Ver deudas
+      </button>
     </div>
   </main>
 

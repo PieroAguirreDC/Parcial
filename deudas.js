@@ -1,107 +1,110 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const usuarioLogeado = JSON.parse(localStorage.getItem('usuarioActivo'));
-  if (!usuarioLogeado) {
-    alert("Debes iniciar sesión primero.");
-    window.location.href = "login.html";
-    return;
-  }
+document.addEventListener("DOMContentLoaded", () => {
+    const usuario = JSON.parse(localStorage.getItem("usuarioActivo"));
 
-  const listaDeudas = document.getElementById('listaDeudas');
-
-  let prestamos = JSON.parse(localStorage.getItem('prestamos')) || [];
-  prestamos = prestamos.filter(p => p.usuario === usuarioLogeado.username);
-
-  if (prestamos.length === 0) {
-    listaDeudas.innerHTML = "<p>No tienes deudas registradas.</p>";
-    return;
-  }
-
-  listaDeudas.innerHTML = prestamos.map((prestamo, index) => {
-    const cuotasRestantes = prestamo.cuotas - (prestamo.pagadas || 0);
-
-    // Calcular cuota si no existe
-    const montoCuota = prestamo.montoCuota !== undefined
-      ? prestamo.montoCuota
-      : (() => {
-          const i = (prestamo.interes / 100) / 12;
-          return i === 0
-            ? prestamo.monto / prestamo.cuotas
-            : prestamo.monto * i / (1 - Math.pow(1 + i, -prestamo.cuotas));
-        })();
-
-    // Estado del préstamo
-    const estado = cuotasRestantes > 0 ? "Pendiente" : "Completado";
-
-    return `
-      <div style="background:#f5f5f5; padding:15px; margin-bottom:15px; border-radius:12px;">
-        <h3>${prestamo.banco}</h3>
-        <p><strong>Monto total:</strong> S/ ${prestamo.monto}</p>
-        <p><strong>Interés:</strong> ${prestamo.interes}%</p>
-        <p><strong>Cuotas totales:</strong> ${prestamo.cuotas}</p>
-        <p><strong>Cuotas restantes:</strong> ${cuotasRestantes}</p>
-        <p><strong>Monto por cuota:</strong> S/ ${montoCuota.toFixed(2)}</p>
-        <p><strong>Fecha de inicio:</strong> ${prestamo.fechaInicio}</p>
-        <p><strong>Fecha de vencimiento:</strong> ${prestamo.fechaFin}</p>
-        <p><strong>Estado:</strong> ${estado}</p>
-        <button onclick="pagarCuota(${index})" ${cuotasRestantes <= 0 ? 'disabled' : ''}>
-          💸 Pagar cuota
-        </button>
-        <button onclick="pagarTodasCuotas(${index})" ${cuotasRestantes <= 0 ? 'disabled' : ''}>
-          💰 Pagar todas las cuotas
-        </button>
-      </div>
-    `;
-  }).join('');
-});
-
-// Pagar una sola cuota
-function pagarCuota(index) {
-  const usuarioLogeado = JSON.parse(localStorage.getItem('usuarioActivo'));
-  let prestamos = JSON.parse(localStorage.getItem('prestamos')) || [];
-  const prestamosUsuario = prestamos.filter(p => p.usuario === usuarioLogeado.username);
-  const prestamo = prestamosUsuario[index];
-
-  if (!prestamo.pagadas) prestamo.pagadas = 0;
-
-  if (prestamo.pagadas < prestamo.cuotas) {
-    prestamo.pagadas++;
-    alert(`✅ Has pagado una cuota. Quedan ${prestamo.cuotas - prestamo.pagadas} cuotas.`);
-
-    if (prestamo.pagadas === prestamo.cuotas) {
-      alert("🎉 ¡Has terminado de pagar este préstamo!");
+    if (!usuario) {
+        alert("Debes iniciar sesión primero.");
+        window.location.href = "login.html";
+        return;
     }
 
-    const indexGlobal = prestamos.findIndex(
-      p => p.usuario === prestamo.usuario && p.fechaInicio === prestamo.fechaInicio
-    );
-    prestamos[indexGlobal] = prestamo;
-    localStorage.setItem('prestamos', JSON.stringify(prestamos));
+    let deudas = JSON.parse(localStorage.getItem("deudas")) || [];
+    deudas = deudas.filter(d => d.usuario === usuario.usuario);
 
-    location.reload();
-  }
+    const hoy = new Date();
+    const lista = document.getElementById("listaDeudas");
+    lista.innerHTML = "";
+
+    deudas.forEach((d, i) => {
+        const fechaFin = new Date(d.fechaFin);
+        const fechaInicio = new Date(d.fechaInicio);
+
+        let estado = "";
+        let color = "";
+
+        // Si ya está pagado completamente → verde
+        if (d.pagadas >= d.cuotas) {
+            estado = "Pagada";
+            color = "verde";
+        } else {
+            const diasRestantes = (fechaFin - hoy) / (1000 * 60 * 60 * 24);
+
+            if (diasRestantes < 0) {
+                estado = "Vencida";
+                color = "rojo";
+            } else if (diasRestantes <= 7) {
+                estado = "Vence esta semana";
+                color = "amarillo";
+            } else {
+                estado = "Pendiente";
+                color = "naranja";
+            }
+        }
+
+        lista.innerHTML += `
+            <div class="deuda-card ${color}">
+                <h3>${d.banco}</h3>
+
+                <div class="info">
+                    <p><strong>Monto total:</strong> S/ ${d.monto.toFixed(2)}</p>
+                    <p><strong>Cuota mensual:</strong> S/ ${d.cuota.toFixed(2)}</p>
+                    <p><strong>Cuotas pagadas:</strong> ${d.pagadas} / ${d.cuotas}</p>
+                    <p><strong>Tasa de interés:</strong> ${d.interes}%</p>
+                    <p><strong>Fecha inicio:</strong> ${d.fechaInicio}</p>
+                    <p><strong>Fecha fin:</strong> ${d.fechaFin}</p>
+                    <p><strong>Estado:</strong> <span class="estado ${color}">${estado}</span></p>
+                </div>
+
+                <div class="acciones">
+                    <select class="metodo" id="metodo-${i}">
+                        <option value="">Método de pago</option>
+                        <option value="Plin">Plin</option>
+                        <option value="Yape">Yape</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Tarjeta">Tarjeta</option>
+                        <option value="Efectivo">Efectivo</option>
+                    </select>
+
+                    <button onclick="pagarCuota(${i})">Pagar cuota</button>
+                    <button class="pagar-todo" onclick="pagarTodo(${i})">Pagar todo</button>
+                </div>
+            </div>
+        `;
+    });
+});
+
+// Obtener método seleccionado
+function getMetodo(i) {
+    return document.getElementById(`metodo-${i}`).value;
 }
 
-// Pagar todas las cuotas restantes
-function pagarTodasCuotas(index) {
-  const usuarioLogeado = JSON.parse(localStorage.getItem('usuarioActivo'));
-  let prestamos = JSON.parse(localStorage.getItem('prestamos')) || [];
-  const prestamosUsuario = prestamos.filter(p => p.usuario === usuarioLogeado.username);
-  const prestamo = prestamosUsuario[index];
+// PAGAR CUOTA
+function pagarCuota(i) {
+    let deudas = JSON.parse(localStorage.getItem("deudas"));
+    let d = deudas[i];
 
-  if (!prestamo.pagadas) prestamo.pagadas = 0;
+    const metodo = getMetodo(i);
+    if (!metodo) return alert("Seleccione un método de pago.");
 
-  const cuotasRestantes = prestamo.cuotas - prestamo.pagadas;
-  if (cuotasRestantes > 0) {
-    prestamo.pagadas = prestamo.cuotas;
-    alert(`✅ Has pagado todas las cuotas restantes (${cuotasRestantes}). ¡Préstamo completado!`);
+    if (d.pagadas < d.cuotas) {
+        d.pagadas++;
+        alert(`Cuota pagada con ${metodo}.`);
+    }
 
-    const indexGlobal = prestamos.findIndex(
-      p => p.usuario === prestamo.usuario && p.fechaInicio === prestamo.fechaInicio
-    );
-    prestamos[indexGlobal] = prestamo;
-    localStorage.setItem('prestamos', JSON.stringify(prestamos));
-
+    localStorage.setItem("deudas", JSON.stringify(deudas));
     location.reload();
-  }
 }
 
+// PAGAR TODO
+function pagarTodo(i) {
+    let deudas = JSON.parse(localStorage.getItem("deudas"));
+    let d = deudas[i];
+
+    const metodo = getMetodo(i);
+    if (!metodo) return alert("Seleccione un método de pago.");
+
+    d.pagadas = d.cuotas;
+    alert(`Deuda pagada completamente con ${metodo}.`);
+
+    localStorage.setItem("deudas", JSON.stringify(deudas));
+    location.reload();
+}

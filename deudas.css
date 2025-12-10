@@ -1,55 +1,95 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f0f3f9;
-  margin: 0;
-  padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f4f8;
+    margin: 0;
+    padding: 0;
 }
 
+/* HEADER */
 header {
-  background: #003366;
-  color: white;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    background: #003366;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.logo {
-  width: 60px;
-  cursor: pointer;
+.btn-salir {
+    background: #d63031;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
+/* CONTENEDOR */
 .container {
-  padding: 2rem;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 15px;
 }
 
+/* TARJETA */
 .deuda-card {
-  background: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+    border-left: 10px solid #ff7800; /* naranja default */
 }
 
-.deuda-card h3 {
-  margin-top: 0;
-  color: #003366;
+.deuda-card.rojo { border-left-color: #d63031; }
+.deuda-card.amarillo { border-left-color: #f1c40f; }
+.deuda-card.naranja { border-left-color: #ff7800; }
+.deuda-card.verde { border-left-color: #2ecc71; }
+
+/* INFO */
+.info p {
+    margin: 4px 0;
+}
+
+.estado {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    color: white;
+}
+
+.estado.rojo { background: #d63031; }
+.estado.amarillo { background: #f1c40f; color: black; }
+.estado.naranja { background: #ff7800; }
+.estado.verde { background: #2ecc71; }
+
+/* ACCIONES */
+.acciones {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+select.metodo {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #999;
 }
 
 button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+button:hover {
+    transform: scale(1.05);
 }
 
-button:hover:not(:disabled) {
-  background: #0056b3;
+.pagar-todo {
+    background: #2e86c1;
 }
