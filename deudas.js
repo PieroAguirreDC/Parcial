@@ -15,25 +15,37 @@ document.addEventListener("DOMContentLoaded", () => {
     lista.innerHTML = "";
 
     deudas.forEach((d, i) => {
-        const fechaFin = new Date(d.fechaFin);
-        const fechaInicio = new Date(d.fechaInicio);
+
+        // ⭐ CORRECCIÓN: evitar desfase de zona horaria
+        const fechaFin = new Date(d.fechaFin + "T23:59:59");
+        const fechaInicio = new Date(d.fechaInicio + "T00:00:00");
 
         let estado = "";
         let color = "";
 
-        // Si ya está pagado completamente → verde
         if (d.pagadas >= d.cuotas) {
             estado = "Pagada";
             color = "verde";
         } else {
-            const diasRestantes = (fechaFin - hoy) / (1000 * 60 * 60 * 24);
+            const hoySinTiempo = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+            const fechaFinSinTiempo = new Date(fechaFin.getFullYear(), fechaFin.getMonth(), fechaFin.getDate());
+
+            const diasRestantes = Math.ceil(
+                (fechaFinSinTiempo - hoySinTiempo) / (1000 * 60 * 60 * 24)
+            );
 
             if (diasRestantes < 0) {
                 estado = "Vencida";
                 color = "rojo";
+
+            } else if (diasRestantes === 0) {
+                estado = "Vence esta semana";
+                color = "amarillo";
+
             } else if (diasRestantes <= 7) {
                 estado = "Vence esta semana";
                 color = "amarillo";
+
             } else {
                 estado = "Pendiente";
                 color = "naranja";
@@ -77,7 +89,7 @@ function getMetodo(i) {
     return document.getElementById(`metodo-${i}`).value;
 }
 
-// PAGAR CUOTA
+// Pagar cuota
 function pagarCuota(i) {
     let deudas = JSON.parse(localStorage.getItem("deudas"));
     let d = deudas[i];
@@ -94,7 +106,7 @@ function pagarCuota(i) {
     location.reload();
 }
 
-// PAGAR TODO
+// Pagar todo
 function pagarTodo(i) {
     let deudas = JSON.parse(localStorage.getItem("deudas"));
     let d = deudas[i];
