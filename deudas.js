@@ -7,8 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    let deudas = JSON.parse(localStorage.getItem("deudas")) || [];
-    deudas = deudas.filter(d => d.usuario === usuario.usuario);
+    let todasLasDeudas = JSON.parse(localStorage.getItem("deudas")) || [];
+
+    // Guardamos índice real para evitar errores al pagar
+    let deudas = todasLasDeudas
+        .map((d, indexReal) => ({ ...d, indexReal }))
+        .filter(d => d.usuario === usuario.usuario);
 
     const hoy = new Date();
     const lista = document.getElementById("listaDeudas");
@@ -16,9 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     deudas.forEach((d, i) => {
 
-        // ⭐ CORRECCIÓN: evitar desfase de zona horaria
         const fechaFin = new Date(d.fechaFin + "T23:59:59");
-        const fechaInicio = new Date(d.fechaInicio + "T00:00:00");
 
         let estado = "";
         let color = "";
@@ -38,11 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 estado = "Vencida";
                 color = "rojo";
 
-            } else if (diasRestantes === 0) {
-                estado = "Vence esta semana";
-                color = "amarillo";
-
-            } else if (diasRestantes <= 7) {
+            } else if (diasRestantes === 0 || diasRestantes <= 7) {
                 estado = "Vence esta semana";
                 color = "amarillo";
 
@@ -51,6 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 color = "naranja";
             }
         }
+
+        // Si está pagada → desactivar botones y método
+        const disabled = d.pagadas >= d.cuotas ? "disabled" : "";
+        const hideButtons = d.pagadas >= d.cuotas ? "style='display:none'" : "";
 
         lista.innerHTML += `
             <div class="deuda-card ${color}">
@@ -66,8 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p><strong>Estado:</strong> <span class="estado ${color}">${estado}</span></p>
                 </div>
 
-                <div class="acciones">
-                    <select class="metodo" id="metodo-${i}">
+                <div class="acciones" ${hideButtons}>
+                    <select class="metodo" id="metodo-${i}" ${disabled}>
                         <option value="">Método de pago</option>
                         <option value="Plin">Plin</option>
                         <option value="Yape">Yape</option>
@@ -76,47 +78,51 @@ document.addEventListener("DOMContentLoaded", () => {
                         <option value="Efectivo">Efectivo</option>
                     </select>
 
-                    <button onclick="pagarCuota(${i})">Pagar cuota</button>
-                    <button class="pagar-todo" onclick="pagarTodo(${i})">Pagar todo</button>
+                    <button onclick="pagarCuota(${d.indexReal}, ${i})">Pagar cuota</button>
+                    <button class="pagar-todo" onclick="pagarTodo(${d.indexReal}, ${i})">Pagar todo</button>
                 </div>
             </div>
         `;
     });
 });
 
-// Obtener método seleccionado
+// Obtener método de pago
 function getMetodo(i) {
     return document.getElementById(`metodo-${i}`).value;
 }
 
-// Pagar cuota
-function pagarCuota(i) {
+// Pagar 1 cuota
+function pagarCuota(indexReal, i) {
     let deudas = JSON.parse(localStorage.getItem("deudas"));
-    let d = deudas[i];
+    let d = deudas[indexReal];
+
+    if (d.pagadas >= d.cuotas) return; // seguridad extra
 
     const metodo = getMetodo(i);
     if (!metodo) return alert("Seleccione un método de pago.");
 
-    if (d.pagadas < d.cuotas) {
-        d.pagadas++;
-        alert(`Cuota pagada con ${metodo}.`);
-    }
+    d.pagadas++;
 
     localStorage.setItem("deudas", JSON.stringify(deudas));
+    alert(`Cuota pagada con ${metodo}.`);
+
     location.reload();
 }
 
 // Pagar todo
-function pagarTodo(i) {
+function pagarTodo(indexReal, i) {
     let deudas = JSON.parse(localStorage.getItem("deudas"));
-    let d = deudas[i];
+    let d = deudas[indexReal];
+
+    if (d.pagadas >= d.cuotas) return; // seguridad extra
 
     const metodo = getMetodo(i);
     if (!metodo) return alert("Seleccione un método de pago.");
 
     d.pagadas = d.cuotas;
-    alert(`Deuda pagada completamente con ${metodo}.`);
 
     localStorage.setItem("deudas", JSON.stringify(deudas));
+    alert(`Deuda pagada completamente con ${metodo}.`);
+
     location.reload();
 }
