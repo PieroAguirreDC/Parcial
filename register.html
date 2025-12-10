@@ -16,36 +16,54 @@
 
   <main class="contenedor">
     <h2>Registro de Usuario</h2>
+
     <form id="formRegistro">
-      <label>DNI:</label>
-      <input type="text" id="dni" required maxlength="8" />
 
-      <label>Nombres:</label>
-      <input type="text" id="nombres" required />
+      <!-- 🔹 Selector de tipo de documento -->
+      <label for="tipoDoc">Registrar como:</label>
+      <select id="tipoDoc" required>
+        <option value="">Seleccione</option>
+        <option value="dni">DNI</option>
+        <option value="ruc">RUC</option>
+      </select>
 
-      <label>Apellidos:</label>
-      <input type="text" id="apellidos" required />
 
+      <!-- 🔹 Campos para DNI -->
+      <div id="grupoDNI" style="display:none;">
+        <label>DNI:</label>
+        <input type="text" id="dni" maxlength="8" />
+
+        <label>Nombres:</label>
+        <input type="text" id="nombres" />
+
+        <label>Apellidos:</label>
+        <input type="text" id="apellidos" />
+      </div>
+
+
+      <!-- 🔹 Campos para RUC -->
+      <div id="grupoRUC" style="display:none;">
+        <label>RUC:</label>
+        <input type="text" id="ruc" maxlength="11" />
+
+        <label>Nombre de Empresa:</label>
+        <input type="text" id="empresa" />
+      </div>
+
+
+      <!-- 🔹 Campos en común -->
       <label>Correo electrónico:</label>
       <input type="email" id="email" required />
 
       <label>Contraseña:</label>
       <input type="password" id="password" required minlength="6" maxlength="8" />
 
+
       <button type="submit">Registrar</button>
     </form>
 
     <p id="mensaje"></p>
   </main>
-
-  <!-- ✅ Scripts al final para asegurar carga -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>
-    // Inicializar EmailJS después de cargar la librería
-    (function() {
-      emailjs.init({ publicKey: "gnXVblTB9cT_HdwHr" });
-    })();
-  </script>
 
   <script src="register.js"></script>
 </body>

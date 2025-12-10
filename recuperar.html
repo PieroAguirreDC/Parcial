@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDP - Recuperar Contraseña</title>
+  <link rel="stylesheet" href="recuperar.css">
+</head>
+
+<body>
+  <div class="recuperar-container">
+
+    <a href="login.html">
+      <img src="logo-cdp.png" alt="Logo CDP" class="logo">
+    </a>
+
+    <h1>Recuperar Contraseña</h1>
+
+    <!-- ETAPA 1: INGRESAR CORREO -->
+    <form id="formCorreo">
+      <label for="email">Correo registrado:</label>
+      <input type="email" id="email" required placeholder="Ingrese su correo">
+      <button type="submit">Enviar código</button>
+      <p id="msgCorreo" class="estado"></p>
+    </form>
+
+    <!-- ETAPA 2: INGRESAR CÓDIGO -->
+    <form id="formCodigo" style="display:none;">
+      <label for="codigo">Código de verificación:</label>
+      <input type="text" id="codigo" maxlength="6" required placeholder="Ingrese el código">
+      <button type="submit">Validar código</button>
+      <p id="msgCodigo" class="estado"></p>
+    </form>
+
+    <!-- ETAPA 3: NUEVA CONTRASEÑA -->
+    <form id="formNuevaPass" style="display:none;">
+      <label for="newPass">Nueva contraseña:</label>
+      <input type="password" id="newPass" minlength="6" maxlength="8" required placeholder="Nueva contraseña">
+
+      <label for="newPass2">Confirmar contraseña:</label>
+      <input type="password" id="newPass2" minlength="6" maxlength="8" required placeholder="Confirmar contraseña">
+
+      <button type="submit">Actualizar contraseña</button>
+      <p id="msgPass" class="estado"></p>
+    </form>
+
+    <p class="volver">
+      <a href="login.html">Volver al inicio</a>
+    </p>
+  </div>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init({ publicKey: "gnXVblTB9cT_HdwHr" });
+    })();
+  </script>
+
+  <script src="recuperar.js"></script>
+</body>
+</html>

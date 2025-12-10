@@ -6,21 +6,28 @@
   <title>CDP - Gestor de Usuarios</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+
+<body class="gestor-page">
   <div class="container">
     <h1>Gestor de Usuarios</h1>
+
     <p id="adminBienvenida"></p>
     <button id="cerrarSesionBtn">Cerrar sesión</button>
 
     <h2>Usuarios Registrados</h2>
+
     <table id="usuariosTabla">
       <thead>
         <tr>
-          <th>Usuario</th>
-          <th>Activo</th>
-          <th>Acciones</th>
+          <th>Tipo de Documento</th>
+          <th>Documento</th>
+          <th>Nombres</th>
+          <th>Empresa</th>
+          <th>Email</th>
+          <th>Acción</th>
         </tr>
       </thead>
+
       <tbody>
         <!-- Usuarios cargados dinámicamente -->
       </tbody>
