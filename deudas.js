@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let todasLasDeudas = JSON.parse(localStorage.getItem("deudas")) || [];
 
-    // Guardamos índice real para evitar errores al pagar
     let deudas = todasLasDeudas
         .map((d, indexReal) => ({ ...d, indexReal }))
         .filter(d => d.usuario === usuario.usuario);
@@ -50,9 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Si está pagada → desactivar botones y método
         const disabled = d.pagadas >= d.cuotas ? "disabled" : "";
-        const hideButtons = d.pagadas >= d.cuotas ? "style='display:none'" : "";
+        const hideIfPaid = d.pagadas >= d.cuotas ? "style='display:none'" : "";
 
         lista.innerHTML += `
             <div class="deuda-card ${color}">
@@ -68,7 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p><strong>Estado:</strong> <span class="estado ${color}">${estado}</span></p>
                 </div>
 
-                <div class="acciones" ${hideButtons}>
+                <div class="acciones">
+
                     <select class="metodo" id="metodo-${i}" ${disabled}>
                         <option value="">Método de pago</option>
                         <option value="Plin">Plin</option>
@@ -78,28 +77,87 @@ document.addEventListener("DOMContentLoaded", () => {
                         <option value="Efectivo">Efectivo</option>
                     </select>
 
-                    <button onclick="pagarCuota(${d.indexReal}, ${i})">Pagar cuota</button>
-                    <button class="pagar-todo" onclick="pagarTodo(${d.indexReal}, ${i})">Pagar todo</button>
+                    <!-- INPUT PARA SUBIR VOUCHERS -->
+                    <input type="file" 
+                        accept=".jpg,.jpeg,.png,.pdf" 
+                        multiple 
+                        class="voucher-input"
+                        id="voucher-${i}"
+                        ${hideIfPaid}>
+
+                    <!-- BOTONES DE PAGO (OCULTOS SI YA FUE PAGADO) -->
+                    <div ${hideIfPaid}>
+                        <button onclick="pagarCuota(${d.indexReal}, ${i})">Pagar cuota</button>
+                        <button class="pagar-todo" onclick="pagarTodo(${d.indexReal}, ${i})">Pagar todo</button>
+                    </div>
+
                 </div>
             </div>
         `;
     });
 });
 
-// Obtener método de pago
+// -----------------------------
+// OBTENER MÉTODO
+// -----------------------------
 function getMetodo(i) {
     return document.getElementById(`metodo-${i}`).value;
 }
 
-// Pagar 1 cuota
-function pagarCuota(indexReal, i) {
+// -----------------------------
+// LEER ARCHIVO BASE64 LIMPIO
+// -----------------------------
+function leerArchivoBase64(archivo) {
+    return new Promise((resolve) => {
+        const lector = new FileReader();
+        lector.onload = () => {
+            const base64 = lector.result.split(",")[1]; 
+            resolve(base64);
+        };
+        lector.readAsDataURL(archivo);
+    });
+}
+
+// -----------------------------
+// GUARDAR VOUCHERS EN LOCALSTORAGE
+// -----------------------------
+async function guardarVouchers(indexReal, i) {
+    const input = document.getElementById(`voucher-${i}`);
+    if (!input || input.files.length === 0) return [];
+
     let deudas = JSON.parse(localStorage.getItem("deudas"));
     let d = deudas[indexReal];
 
-    if (d.pagadas >= d.cuotas) return; // seguridad extra
+    if (!d.vouchers) d.vouchers = [];
+
+    for (let archivo of input.files) {
+        const base64 = await leerArchivoBase64(archivo);
+
+        d.vouchers.push({
+            nombre: archivo.name,
+            tipo: archivo.type,
+            data: base64,
+            fecha: new Date().toISOString()
+        });
+    }
+
+    localStorage.setItem("deudas", JSON.stringify(deudas));
+    return d.vouchers;
+}
+
+// -----------------------------
+// PAGAR CUOTA
+// -----------------------------
+async function pagarCuota(indexReal, i) {
+    let deudas = JSON.parse(localStorage.getItem("deudas"));
+    let d = deudas[indexReal];
+
+    if (d.pagadas >= d.cuotas) return;
 
     const metodo = getMetodo(i);
     if (!metodo) return alert("Seleccione un método de pago.");
+
+    await guardarVouchers(indexReal, i);
 
     d.pagadas++;
 
@@ -109,15 +167,19 @@ function pagarCuota(indexReal, i) {
     location.reload();
 }
 
-// Pagar todo
-function pagarTodo(indexReal, i) {
+// -----------------------------
+// PAGAR TODO
+// -----------------------------
+async function pagarTodo(indexReal, i) {
     let deudas = JSON.parse(localStorage.getItem("deudas"));
     let d = deudas[indexReal];
 
-    if (d.pagadas >= d.cuotas) return; // seguridad extra
+    if (d.pagadas >= d.cuotas) return;
 
     const metodo = getMetodo(i);
     if (!metodo) return alert("Seleccione un método de pago.");
+
+    await guardarVouchers(indexReal, i);
 
     d.pagadas = d.cuotas;
 
